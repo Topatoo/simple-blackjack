@@ -31,10 +31,11 @@
               </p>
           </div>
       </div>
-      <div class="board__winnner">
+      <div v-if="winnerMessage">
           <p class="board__winner-message">
-              {{ winner }} wins
+              {{ winnerMessage }}
           </p>
+          <button @click="playAgain()">Play Again</button>
       </div>
   </div>
 </template>
@@ -58,7 +59,7 @@ export default {
             playerHand: [],
             dealerHand: [],
             playerStand: false,
-            winner: '',
+            winnerMessage: null,
         };
     },
     computed: {
@@ -81,10 +82,14 @@ export default {
     methods: {
         playerHit() {
             this.playerHand.push(this.deck.shift());
+            if (this.playerBust) {
+                this.updateWinnerMessage();
+            }
         },
         updatePlayerStand() {
             this.playerStand = true;
             this.autoPopDealerHand();
+            this.updateWinnerMessage();
         },
         dealerHit() {
             this.dealerHand.push(this.deck.shift());
@@ -103,9 +108,38 @@ export default {
                 this.deck[j] = temp;
             }
         },
+        updateWinnerMessage() {
+            if (this.playerBust) {
+                this.winnerMessage = 'Dealer wins!'
+            } else if (this.dealerBust) {
+                this.winnerMessage = 'Player wins!'
+            } else if (this.dealerTotal === this.playerTotal) {
+                this.winnerMessage = 'Game is a draw.'
+            } else if (this.dealerTotal > this.playerTotal) {
+                this.winnerMessage = 'Dealer wins!'
+            } else if (this.playerTotal > this.dealerTotal) {
+                this.winnerMessage = 'Player wins!'
+            } else {
+                this.winnerMessage = null;
+            }
+        },
+        playAgain() {
+            this.deck = createDeck();
+            this.playerHand = [];
+            this.dealerHand = [];
+            this.playerStand = false;
+            this.winnerMessage = null;
+            this.createShuffledDeck();
+            this.dealPlayerHand();
+        },
+        dealPlayerHand() {
+            this.playerHit();
+            this.playerHit();
+        },
     },
     created() {
         this.createShuffledDeck();
+        this.dealPlayerHand();
     },
 };
 </script>
@@ -120,7 +154,7 @@ export default {
             height: 40vh;
         }
         &__players {
-            background: rgb(42, 172, 85);
+            background: rgb(105, 193, 134);
             width: 40%;
             padding: 2px;
             border: 1px solid black;
@@ -131,7 +165,7 @@ export default {
             justify-content: center;
         }
         &__controls {
-            padding: 0.5rem;
+            padding: 8px;
         }
         &__hit-button {
             margin-right: 10px;
@@ -142,12 +176,14 @@ export default {
             width: 20%;
             height: 24px;
         }
-        &__winner {
-            height: 40px;
+        &__message {
+            color: red;
+            font-weight: 800;
         }
         &__winner-message {
+            color: green;
             font-size: 30px;
-            font-weight: bold;
+            font-weight: 800;
         }
     }
 </style>
