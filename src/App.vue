@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Board msg="Welcome to Simple Blackjack" />
+    <Board title="Welcome to Simple Blackjack" />
   </div>
 </template>
 

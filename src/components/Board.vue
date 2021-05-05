@@ -1,12 +1,12 @@
 <template>
   <div class="board">
-      <h1>{{ msg }}</h1>
+      <h1>{{ title }}</h1>
       <div class="board__wrapper">
           <div class="board__players">
               <h2>Player</h2>
               <h3>Total: {{ playerTotal }}</h3>
               <div v-if="playerHand.length > 0" class="board__players-cards">
-                  <div v-for="card in playerHand" class="board__player-card" :key="`${card.text}-${card.suit}`">
+                  <div v-for="card in playerHand" :key="`${card.text}-${card.suit}`">
                       <Card :suit="card.suit" :value="card.value" :text="card.text" />
                   </div>
               </div>
@@ -14,27 +14,21 @@
                   <button :disabled="disableButtons" class="board__hit-button" @click="playerHit()">Hit</button>
                   <button :disabled="disableButtons" class="board__stand-button" @click="updatePlayerStand()">Stand</button>
               </div>
-              <p v-if="playerBust" class="board__message">
-                  Player has gone bust!
-              </p>
+              <p v-if="playerBust" class="board__message">Player has gone bust!</p>
           </div>
           <div class="board__players">
               <h2>Dealer</h2>
               <h3>Total: {{ dealerTotal }}</h3>
               <div v-if="dealerHand.length > 0" class="board__players-cards">
-                  <div v-for="card in dealerHand" class="board__player-card" :key="`${card.text}-${card.suit}`">
+                  <div v-for="card in dealerHand" :key="`${card.text}-${card.suit}`">
                       <Card :suit="card.suit" :value="card.value" :text="card.text" />
                   </div>
               </div>
-              <p v-if="dealerBust" class="board__message">
-                  Dealer has gone bust!
-              </p>
+              <p v-if="dealerBust" class="board__message">Dealer has gone bust!</p>
           </div>
       </div>
       <div v-if="winnerMessage">
-          <p class="board__winner-message">
-              {{ winnerMessage }}
-          </p>
+          <p class="board__winner-message">{{ winnerMessage }}</p>
           <button class="board__play-button" @click="playAgain()">Play Again</button>
       </div>
   </div>
@@ -51,7 +45,7 @@ export default {
         Card,
     },
     props: {
-        msg: string().isRequired,
+        title: string().isRequired,
     },
     data() {
         return {
