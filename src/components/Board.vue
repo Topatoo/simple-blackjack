@@ -35,7 +35,7 @@
           <p class="board__winner-message">
               {{ winnerMessage }}
           </p>
-          <button @click="playAgain()">Play Again</button>
+          <button class="board__play-button" @click="playAgain()">Play Again</button>
       </div>
   </div>
 </template>
@@ -184,6 +184,10 @@ export default {
             color: green;
             font-size: 30px;
             font-weight: 800;
+        }
+        &__play-button {
+            height: 24px;
+            width: 100px;
         }
     }
 </style>
