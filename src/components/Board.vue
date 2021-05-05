@@ -10,9 +10,9 @@
                       <Card :suit="card.suit" :value="card.value" :text="card.text" />
                   </div>
               </div>
-              <div v-if="!playerStand || !playerBust" class="board__controls">
-                  <button class="board__hit-button" @click="playerHit()">Hit</button>
-                  <button class="board__stand-button" @click="playerStand = !playerStand">Stand</button>
+              <div class="board__controls">
+                  <button :disabled="disableButtons" class="board__hit-button" @click="playerHit()">Hit</button>
+                  <button :disabled="disableButtons" class="board__stand-button" @click="updatePlayerStand()">Stand</button>
               </div>
               <p v-if="playerBust" class="board__message">
                   Player has gone bust!
@@ -21,16 +21,27 @@
           <div class="board__players">
               <h2>Dealer</h2>
               <h3>Total: {{ dealerTotal }}</h3>
+              <div v-if="dealerHand.length > 0" class="board__players-cards">
+                  <div v-for="card in dealerHand" class="board__player-card" :key="`${card.text}-${card.suit}`">
+                      <Card :suit="card.suit" :value="card.value" :text="card.text" />
+                  </div>
+              </div>
+              <p v-if="dealerBust" class="board__message">
+                  Dealer has gone bust!
+              </p>
           </div>
       </div>
-      <!-- <div v-for="(card, index) in deck" :key="index">
-          <Card :suit="card.suit" :value="card.value" :text="card.text" />
-      </div> -->
+      <div class="board__winnner">
+          <p class="board__winner-message">
+              {{ winner }} wins
+          </p>
+      </div>
   </div>
 </template>
 
 <script>
 import { string } from 'vue-types';
+import { createDeck } from '../utils/helpers';
 import Card from '../components/Card';
 
 export default {
@@ -47,6 +58,7 @@ export default {
             playerHand: [],
             dealerHand: [],
             playerStand: false,
+            winner: '',
         };
     },
     computed: {
@@ -59,62 +71,37 @@ export default {
         playerBust() {
             return this.playerTotal > 21; 
         },
+        dealerBust() {
+            return this.dealerTotal > 21;
+        },
+        disableButtons() {
+            return this.playerBust || this.playerStand;
+        }
     },
     methods: {
         playerHit() {
             this.playerHand.push(this.deck.shift());
         },
+        updatePlayerStand() {
+            this.playerStand = true;
+            this.autoPopDealerHand();
+        },
         dealerHit() {
             this.dealerHand.push(this.deck.shift());
         },
+        autoPopDealerHand() {
+            while (this.dealerTotal < 17) {
+                this.dealerHit();
+            }
+        },
         createShuffledDeck() {
-            this.deck = this.createDeck();
+            this.deck = createDeck();
             for (let i = this.deck.length - 1; i > 0; i--) {
                 let j = Math.floor(Math.random() * (i + 1));
                 let temp = this.deck[i];
                 this.deck[i] = this.deck[j];
                 this.deck[j] = temp;
             }
-        },
-        createDeck() {
-            const newDeck = [];
-            const suits = ['heart', 'diamond', 'club', 'spade'];
-            for (let i = 0; i < 4; i++) {
-                const suit = suits[i];
-                for (let j = 0; j < 13; j++) {
-                    newDeck.push({
-                        suit,
-                        value: this.cardValue(j),
-                        text: this.cardText(j),
-                    });
-                }
-            }
-            return newDeck;
-        },
-        cardValue(value) {
-            let weight = 2;
-            if (value < 9) {
-                weight = weight + value;
-            } else {
-                weight = value < 12 ? 10 : 11;
-            }
-            return weight;
-        },
-        cardText(value) {
-            let text = `${value + 2}`;
-            if (value === 9) {
-                text = 'J';
-            }
-            if (value === 10) {
-                text = 'Q';
-            }
-            if (value === 11) {
-                text = 'K';
-            }
-            if (value === 12) {
-                text = 'A';
-            }
-            return text;
         },
     },
     created() {
@@ -130,7 +117,7 @@ export default {
         &__wrapper {
             display: flex;
             justify-content: space-evenly;
-            height: 60vh;
+            height: 40vh;
         }
         &__players {
             background: rgb(42, 172, 85);
@@ -139,13 +126,10 @@ export default {
             border: 1px solid black;
             border-radius: 10px;
         }
-        // &__dealer {
-        //     background: rgb(42, 172, 85);
-        //     width: 40%;
-        //     padding: 2px;
-        //     border: 1px solid black;
-        //     border-radius: 10px;
-        // }
+        &__players-cards {
+            display: flex;
+            justify-content: center;
+        }
         &__controls {
             padding: 0.5rem;
         }
@@ -157,6 +141,13 @@ export default {
         &__stand-button {
             width: 20%;
             height: 24px;
+        }
+        &__winner {
+            height: 40px;
+        }
+        &__winner-message {
+            font-size: 30px;
+            font-weight: bold;
         }
     }
 </style>
