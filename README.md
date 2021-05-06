@@ -1,8 +1,8 @@
 # simple-blackjack
-Node 14.16.1 (LTS) or later is installed and `npm` is on the PATH
+Node 14.16.1 or later is installed and `npm` is on the PATH
 
 ## Project start
-execute `npm install` followed by `npm run serve` in the project root then open http://localhost:8080 in a web browser
+Execute `npm install` followed by `npm run serve` in the project root then open http://localhost:8080 in a web browser
 
 ## Project setup
 ```
