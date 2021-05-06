@@ -4,7 +4,7 @@
       <div class="board__wrapper">
           <div class="board__players">
               <h2>Player</h2>
-              <h3>Total: {{ playerTotal }}</h3>
+              <h3>Player Total: {{ playerTotal }}</h3>
               <div v-if="playerHand.length > 0" class="board__players-cards">
                   <div v-for="card in playerHand" :key="`${card.text}-${card.suit}`">
                       <Card :suit="card.suit" :value="card.value" :text="card.text" />
@@ -18,7 +18,7 @@
           </div>
           <div class="board__players">
               <h2>Dealer</h2>
-              <h3>Total: {{ dealerTotal }}</h3>
+              <h3>Dealer Total: {{ dealerTotal }}</h3>
               <div v-if="dealerHand.length > 0" class="board__players-cards">
                   <div v-for="card in dealerHand" :key="`${card.text}-${card.suit}`">
                       <Card :suit="card.suit" :value="card.value" :text="card.text" />
