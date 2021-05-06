@@ -7,6 +7,6 @@ describe('Board.vue', () => {
         const { getByText } = render(Board, {
             props: { title }
         });
-        expect(getByText(msg)).toBeTruthy();
+        expect(getByText(title)).toBeTruthy();
     });
 });
